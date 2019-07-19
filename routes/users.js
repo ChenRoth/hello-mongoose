@@ -8,7 +8,7 @@ const URL = 'mongodb://localhost:27017/helloMongoose';
 mongoose.connect(URL, { useNewUrlParser: true });
 
 const userSchema = new mongoose.Schema({
-    name: { type: String, required: true },
+    name: { type: String, required: true, lowercase: true, trim: true },
     color: {
         type: String,
         default: function () {
@@ -22,7 +22,12 @@ const userSchema = new mongoose.Schema({
             return /^(red|yellow|blue)$/i.test(this.color);
         }
     },
-    age: { type: Number, required: [true, 'come on dude, we need your age!'] }
+    age: {
+        type: Number,
+        min: [18, 'user must be an adult'],
+        max: [122, 'are you Metusalah??'],
+        required: [true, 'come on dude, we need your age!']
+    }
 });
 
 const User = mongoose.model('User', userSchema);
