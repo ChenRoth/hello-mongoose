@@ -8,8 +8,14 @@ const URL = 'mongodb://localhost:27017/helloMongoose';
 mongoose.connect(URL, { useNewUrlParser: true });
 
 const userSchema = new mongoose.Schema({
-    name: String,
-    age: Number
+    name: { type: String, required: true },
+    color: {
+        type: String,
+        validate: function () {
+            return /^(red|yellow|blue)$/i.test(this.color);
+        }
+    },
+    age: { type: Number, required: [true, 'come on dude, we need your age!'] }
 });
 
 const User = mongoose.model('User', userSchema);
@@ -21,8 +27,12 @@ router.get('/', async (_, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const { age, name } = req.body;
-    const user = new User({ age, name });
+    const { age, name, color } = req.body;
+    const user = new User({ age, name, color });
+    const validationResult = user.validateSync();
+    // if (validationResult && Object.keys(validationResult.errors).length) {
+    // return res.status(400).send('go home');
+    // }
     try {
         await user.save();
         res.send('OK')
