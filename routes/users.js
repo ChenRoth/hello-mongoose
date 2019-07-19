@@ -20,4 +20,15 @@ router.get('/', async (_, res) => {
     res.send(users);
 });
 
+router.post('/', async (req, res) => {
+    const { age, name } = req.body;
+    const user = new User({ age, name });
+    try {
+        await user.save();
+        res.send('OK')
+    } catch (e) {
+        res.status(400).send(e.message);
+    }
+});
+
 module.exports = router;
