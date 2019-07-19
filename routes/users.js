@@ -11,7 +11,14 @@ const userSchema = new mongoose.Schema({
     name: { type: String, required: true },
     color: {
         type: String,
-        validate: function () {
+        default: function () {
+            // if the user's name starts with "r", the default color is "red"
+            if (this.name.startsWith('r')) {
+                return 'red';
+            }
+            return 'yellow';
+        },
+        validate: function (/* color */) {
             return /^(red|yellow|blue)$/i.test(this.color);
         }
     },
